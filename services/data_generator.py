@@ -5,6 +5,116 @@ from operator import sub
 import numpy as np
 import pprint, logging, copy
 
+def generate_all_possible_states():
+	all_states = {1: [], 2: [], 3: [], 4: [], 5: []}
+	for num in range(1, 6):
+		logging.info("Generating all possible states for " + str(num) + " engine(s)...")
+		sums = find_all_unique_sums_to_n(num)
+		situation = [0, 0, 0, 0, 0, 0, 0]
+		situation_length = len(situation)
+		for s in sums:
+			if len(s) == 1:
+				new_states = generate_situations_for_sum_length_1(s, situation[:], situation_length)
+				all_states[num].extend(new_states)
+			elif len(s) == 2:
+				new_states = generate_situations_for_sum_length_2(s, situation[:], situation_length)
+				all_states[num].extend(new_states)
+			elif len(s) == 3:
+				new_states = generate_situations_for_sum_length_3(s, situation[:], situation_length)
+				all_states[num].extend(new_states)
+			elif len(s) == 4:
+				new_states = generate_situations_for_sum_length_4(s, situation[:], situation_length)
+				all_states[num].extend(new_states)
+			elif len(s) == 5:
+				new_states = generate_situations_for_sum_length_5(s, situation[:], situation_length)
+				all_states[num].extend(new_states)
+		logging.info("States have been generated.")
+	writer_util.export_all_possible_states(all_states)
+
+def generate_situations_for_sum_length_1(s, situation, situation_length):
+	states = []
+	for i in range(situation_length):
+		current_state = situation[:]
+		current_state[i] = s[0]
+		states.append(current_state)
+	return states
+
+def generate_situations_for_sum_length_2(s, situation, situation_length):
+	states = []
+	for i in range(situation_length):
+		for j in range(situation_length):
+			if indices_are_not_equal([i, j]):
+				current_state = situation[:]
+				current_state[i] = s[0]
+				current_state[j] = s[1]
+				states.append(current_state)
+	return states
+
+def generate_situations_for_sum_length_3(s, situation, situation_length):
+	states = []
+	for i in range(situation_length):
+		for j in range(situation_length):
+			for k in range(situation_length):
+				if indices_are_not_equal([i, j, k]):
+					current_state = situation[:]
+					current_state[i] = s[0]
+					current_state[j] = s[1]
+					current_state[k] = s[2]
+					states.append(current_state)
+	return states
+
+def generate_situations_for_sum_length_4(s, situation, situation_length):
+	states = []
+	for i in range(situation_length):
+		for j in range(situation_length):
+			for k in range(situation_length):
+				for l in range(situation_length):
+					if indices_are_not_equal([i, j, k, l]):
+						current_state = situation[:]
+						current_state[i] = s[0]
+						current_state[j] = s[1]
+						current_state[k] = s[2]
+						current_state[l] = s[3]
+						states.append(current_state)
+	return states
+
+def generate_situations_for_sum_length_5(s, situation, situation_length):
+	states = []
+	for i in range(situation_length):
+		for j in range(situation_length):
+			for k in range(situation_length):
+				for l in range(situation_length):
+					for m in range(situation_length):
+						if indices_are_not_equal([i, j, k, l, m]):
+							current_state = situation[:]
+							current_state[i] = s[0]
+							current_state[j] = s[1]
+							current_state[k] = s[2]
+							current_state[l] = s[3]
+							current_state[m] = s[4]
+							states.append(current_state)
+	return states
+
+def generate_all_possible_num_broken_num_working():
+	all_possible_num_broken_num_working = {1: [], 2: [], 3: [], 4: [], 5: []}
+	for num in range(1, 6):
+		logging.info("Generating all possible ways in which engines can be working and broken for " + str(num) + " engine(s)...")
+		sums = find_all_unique_sums_to_n(num)
+		situation = [0, 0, 0]
+		situation_length = len(situation)
+		for s in sums:
+			if len(s) == 1:
+				new_num_broken_num_working = generate_situations_for_sum_length_1(s, situation[:], situation_length)
+				all_possible_num_broken_num_working[num].extend(new_num_broken_num_working)
+			elif len(s) == 2:
+				new_num_broken_num_working = generate_situations_for_sum_length_2(s, situation[:], situation_length)
+				all_possible_num_broken_num_working[num].extend(new_num_broken_num_working)
+			elif len(s) == 3:
+				new_num_broken_num_working = generate_situations_for_sum_length_3(s, situation[:], situation_length)
+				all_possible_num_broken_num_working[num].extend(new_num_broken_num_working)
+		logging.info("Possibilities have been generated.")
+	writer_util.export_all_possible_num_broken_num_working(all_possible_num_broken_num_working)
+
 def find_all_unique_sums_to_n(n):
 	beginning, middle, end = [0], list(range(1, n)), [n]
 	splits = (d for i in range(n) for d in combinations(middle, i))
@@ -874,10 +984,9 @@ class RemovalsGenerator:
 			if self.more_than_one_value_must_occur_outside_of_hubs(values):
 				self.more_than_one_value_must_occur_at_non_hubs = True
 				assert self.values_to_sum_contain_at_least_two_ones(values), "Two values must occur at non-hubs to generate permutations for this sum."
-				else:
-					self.append_to_beginning_of_indices_to_iterate_for_current_values([self.num_non_hubs, self.num_non_hubs])
-					values_to_edit = self.remove_values_for_which_index_lists_have_been_found(values_to_edit, [1, 1])
-					self.append_to_end_of_indices_to_iterate_for_current_values(values_to_edit)
+				self.append_to_beginning_of_indices_to_iterate_for_current_values([self.num_non_hubs, self.num_non_hubs])
+				values_to_edit = self.remove_values_for_which_index_lists_have_been_found(values_to_edit, [1, 1])
+				self.append_to_end_of_indices_to_iterate_for_current_values(values_to_edit)
 			else:
 				if values.count(2) > 0:
 					if values.count(1) >= 2: # 2 occurs at least once, 1 occurs at least twice

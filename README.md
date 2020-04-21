@@ -18,7 +18,6 @@ This program currently generates optimal default spare placement for the followi
 - CFM56-5B3-3
 - CFM56-7B26
 - CFM56-7B27E-B1F
-- JT8D-219
 - PW2000-2037
 - PW2000-2040
 - PW4000-4060
@@ -54,6 +53,56 @@ cd StaticPlacementGenerator
 
 ## Usage
 
+### First Run
+
+Some files will need to be created to use for all subsequent runs. These tasks will only need to be completed once per machine this program is used on.
+
+Navigate to the `StaticPlacementGenerator` directory. Run the following command to set the `FIRST_RUN` environment variable to indicate this is the first time running this program on your machine:
+```
+export FIRST_RUN=true
+```
+
+Doing this will create the following for future use:
+- All possible states exported to a file
+- All possible removal situations for each engine type exported to a file
+
+### Subsequent Runs
+
+The `FIRST_RUN` environment variable can be set to FALSE for all future runs.
+```
+export FIRST_RUN=false
+```
+
+Prior to running this program, a few files may need to be updated.
+
+#### Update Information to Reflect Current State/System
+
+**`data_to_read/removal_info.csv`**
+
+This file contains information on expected number of removals for each engine subtype. For each engine subtype, the following is specified:
+- Expected maximum number of removals in a month for all airports
+- Expected maximum number of removals in a month for each specific hub
+- Expected maximum number of removals in a month for all airports excluding hubs
+- Expected AOS cost
+- Whether or not these files were updated from the previous run (if any of the data for a subtype has been updated, make sure to set the UPDATED column value for that row to be TRUE)
+
+Our team based these values on past removal data for each type. We set the maximum number of removals that could happen based on data from 2015-2019 by taking the maximum that had ever occurred for each and adding 1 to it. For example, if no more than 3 removals ever occurred in ATL, we assumed the maximum number of removals that could ever happen at ATL would be 4.
+
+*Limitations*:
+- The maximum number of removals for all airports cannot be less than 1 or greater than 10
+- The maximum number of removals for each specific hub cannot be greater than 10
+- The maximum number of removals for all airports excluding hubs cannot be greater than 2
+
+The purpose of this file is to minimize the iterations the program runs so that runtime is reduced and extremely unlikely situations are not considered.
+
+**`data_to_read/engine_info.csv`**
+
+This file contains information on total number of engines for each engine subtype. For each engine subtype, the following is specified:
+- Total number of current spare engines 
+
+*Limitations*:
+- The total number of current spare engines cannot be less than 1 and cannot be greater than 5
+
 ### Run the Program
 
 Navigate to the `StaticPlacementGenerator` directory if you aren't there already.
@@ -66,6 +115,18 @@ python3 app.py
 The program may take several hours to run. 
 
 ## Files Provided
+
+For each engine subtype (located in `StaticPlacementGenerator/data_to_read/engine_subtype/`):
+
+| File 														| Description 												|
+| ----------------------------------------------------------| --------------------------------------------------------- |
+| `probabilities_of_num_removals_in_each_state_region`		| Probabilities of removals based on 2015-2019 data 		|
+| `expected_transport_cost` 								| Expected transportation costs from hubs to state regions 	|
+| `number_of_broken_engines_and_number_repaired` 			| Probabilities of engines repaired given on engines broken |
+
+Turnover documents will be provided that will outline how to re-calculate probability values based on new past data.
+
+**The format of these documents (the naming of the file, the header structure and naming, etc.) must remain the same in order for the program to work.**
 
 ## Authors
 
