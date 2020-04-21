@@ -4,7 +4,6 @@ util/__pycache__
 services/__pycache__
 data_exported/.DS_Store
 data_to_read/.DS_Store
-
 data_exported/BR700-715C1-30_static_placement.csv
 data_exported/CF6-80C2B6_static_placement.csv
 data_exported/CF6-80C2B6F_static_placement.csv
@@ -20,10 +19,8 @@ data_exported/PW4000-4060_static_placement.csv
 data_exported/PW4000-4168_static_placement.csv
 data_exported/TRENT8-892-17_static_placement.csv
 data_exported/V2500-D5_static_placement.csv
-
 data_to_read/all_possible_num_working_num_broken.csv
 data_to_read/all_possible_states.csv
-
 data_to_read/BR700-715C1-30/BR700-715C1-30_all_possible_removal_situations.csv
 data_to_read/CF6-80C2B6/CF6-80C2B6_all_possible_removal_situations.csv
 data_to_read/CF6-80C2B6F/CF6-80C2B6F_all_possible_removal_situations.csv
